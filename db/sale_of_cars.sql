@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Хост: 127.0.0.1:3306
--- Час створення: Лют 03 2015 р., 23:44
+-- Час створення: Лют 05 2015 р., 14:26
 -- Версія сервера: 5.5.41-log
 -- Версія PHP: 5.3.29
 
@@ -37,6 +37,8 @@ CREATE TABLE IF NOT EXISTS `cars` (
   `price` float NOT NULL,
   `currency_id` int(11) NOT NULL,
   `car_body_type_id` int(11) NOT NULL,
+  `photos_id` int(11) NOT NULL,
+  `info_about_car` text NOT NULL,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   KEY `type_id` (`type_id`),
@@ -44,7 +46,8 @@ CREATE TABLE IF NOT EXISTS `cars` (
   KEY `model_id` (`model_id`),
   KEY `currency_id` (`currency_id`),
   KEY `car_body_type_id` (`car_body_type_id`),
-  KEY `region_id` (`region_id`)
+  KEY `region_id` (`region_id`),
+  KEY `photos_id` (`photos_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -68,6 +71,19 @@ CREATE TABLE IF NOT EXISTS `car_body_types` (
 CREATE TABLE IF NOT EXISTS `car_brands` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблиці `car_galeries`
+--
+
+CREATE TABLE IF NOT EXISTS `car_galeries` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(600) NOT NULL,
+  `path` varchar(1000) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
@@ -163,13 +179,14 @@ CREATE TABLE IF NOT EXISTS `users` (
 -- Обмеження зовнішнього ключа таблиці `cars`
 --
 ALTER TABLE `cars`
-  ADD CONSTRAINT `cars_ibfk_7` FOREIGN KEY (`region_id`) REFERENCES `regions` (`id`),
   ADD CONSTRAINT `cars_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
   ADD CONSTRAINT `cars_ibfk_2` FOREIGN KEY (`type_id`) REFERENCES `car_types` (`id`),
   ADD CONSTRAINT `cars_ibfk_3` FOREIGN KEY (`brand_id`) REFERENCES `car_brands` (`id`),
   ADD CONSTRAINT `cars_ibfk_4` FOREIGN KEY (`model_id`) REFERENCES `car_models` (`id`),
   ADD CONSTRAINT `cars_ibfk_5` FOREIGN KEY (`currency_id`) REFERENCES `currencies` (`id`),
-  ADD CONSTRAINT `cars_ibfk_6` FOREIGN KEY (`car_body_type_id`) REFERENCES `car_body_types` (`id`);
+  ADD CONSTRAINT `cars_ibfk_6` FOREIGN KEY (`car_body_type_id`) REFERENCES `car_body_types` (`id`),
+  ADD CONSTRAINT `cars_ibfk_7` FOREIGN KEY (`region_id`) REFERENCES `regions` (`id`),
+  ADD CONSTRAINT `cars_ibfk_8` FOREIGN KEY (`photos_id`) REFERENCES `car_galeries` (`id`) ON DELETE CASCADE;
 
 --
 -- Обмеження зовнішнього ключа таблиці `car_models`
@@ -187,8 +204,8 @@ ALTER TABLE `cities`
 -- Обмеження зовнішнього ключа таблиці `users`
 --
 ALTER TABLE `users`
-  ADD CONSTRAINT `users_ibfk_2` FOREIGN KEY (`city_id`) REFERENCES `cities` (`id`),
-  ADD CONSTRAINT `users_ibfk_1` FOREIGN KEY (`region_id`) REFERENCES `regions` (`id`);
+  ADD CONSTRAINT `users_ibfk_1` FOREIGN KEY (`region_id`) REFERENCES `regions` (`id`),
+  ADD CONSTRAINT `users_ibfk_2` FOREIGN KEY (`city_id`) REFERENCES `cities` (`id`);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
