@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Хост: 127.0.0.1:3306
--- Час створення: Лют 05 2015 р., 14:26
+-- Час створення: Лют 07 2015 р., 03:42
 -- Версія сервера: 5.5.41-log
 -- Версія PHP: 5.3.29
 
@@ -19,6 +19,30 @@ SET time_zone = "+00:00";
 --
 -- База даних: `sale_of_cars`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблиці `body_types`
+--
+
+CREATE TABLE IF NOT EXISTS `body_types` (
+  `id` int(2) NOT NULL AUTO_INCREMENT,
+  `name` varchar(400) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблиці `brands`
+--
+
+CREATE TABLE IF NOT EXISTS `brands` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(200) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -53,69 +77,6 @@ CREATE TABLE IF NOT EXISTS `cars` (
 -- --------------------------------------------------------
 
 --
--- Структура таблиці `car_body_types`
---
-
-CREATE TABLE IF NOT EXISTS `car_body_types` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(400) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Структура таблиці `car_brands`
---
-
-CREATE TABLE IF NOT EXISTS `car_brands` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(200) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Структура таблиці `car_galeries`
---
-
-CREATE TABLE IF NOT EXISTS `car_galeries` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(600) NOT NULL,
-  `path` varchar(1000) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Структура таблиці `car_models`
---
-
-CREATE TABLE IF NOT EXISTS `car_models` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(200) NOT NULL,
-  `brand_id` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `brand_id` (`brand_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Структура таблиці `car_types`
---
-
-CREATE TABLE IF NOT EXISTS `car_types` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(200) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
 -- Структура таблиці `cities`
 --
 
@@ -142,12 +103,49 @@ CREATE TABLE IF NOT EXISTS `currencies` (
 -- --------------------------------------------------------
 
 --
+-- Структура таблиці `galeries`
+--
+
+CREATE TABLE IF NOT EXISTS `galeries` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(600) NOT NULL,
+  `path` varchar(1000) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблиці `models`
+--
+
+CREATE TABLE IF NOT EXISTS `models` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(200) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
 -- Структура таблиці `regions`
 --
 
 CREATE TABLE IF NOT EXISTS `regions` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(500) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблиці `types`
+--
+
+CREATE TABLE IF NOT EXISTS `types` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(200) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
@@ -180,19 +178,13 @@ CREATE TABLE IF NOT EXISTS `users` (
 --
 ALTER TABLE `cars`
   ADD CONSTRAINT `cars_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
-  ADD CONSTRAINT `cars_ibfk_2` FOREIGN KEY (`type_id`) REFERENCES `car_types` (`id`),
-  ADD CONSTRAINT `cars_ibfk_3` FOREIGN KEY (`brand_id`) REFERENCES `car_brands` (`id`),
-  ADD CONSTRAINT `cars_ibfk_4` FOREIGN KEY (`model_id`) REFERENCES `car_models` (`id`),
+  ADD CONSTRAINT `cars_ibfk_2` FOREIGN KEY (`type_id`) REFERENCES `types` (`id`),
+  ADD CONSTRAINT `cars_ibfk_3` FOREIGN KEY (`brand_id`) REFERENCES `brands` (`id`),
+  ADD CONSTRAINT `cars_ibfk_4` FOREIGN KEY (`model_id`) REFERENCES `models` (`id`),
   ADD CONSTRAINT `cars_ibfk_5` FOREIGN KEY (`currency_id`) REFERENCES `currencies` (`id`),
-  ADD CONSTRAINT `cars_ibfk_6` FOREIGN KEY (`car_body_type_id`) REFERENCES `car_body_types` (`id`),
+  ADD CONSTRAINT `cars_ibfk_6` FOREIGN KEY (`car_body_type_id`) REFERENCES `body_types` (`id`),
   ADD CONSTRAINT `cars_ibfk_7` FOREIGN KEY (`region_id`) REFERENCES `regions` (`id`),
-  ADD CONSTRAINT `cars_ibfk_8` FOREIGN KEY (`photos_id`) REFERENCES `car_galeries` (`id`) ON DELETE CASCADE;
-
---
--- Обмеження зовнішнього ключа таблиці `car_models`
---
-ALTER TABLE `car_models`
-  ADD CONSTRAINT `car_models_ibfk_1` FOREIGN KEY (`brand_id`) REFERENCES `car_brands` (`id`);
+  ADD CONSTRAINT `cars_ibfk_8` FOREIGN KEY (`photos_id`) REFERENCES `galeries` (`id`) ON DELETE CASCADE;
 
 --
 -- Обмеження зовнішнього ключа таблиці `cities`
