@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Хост: 127.0.0.1:3306
--- Час створення: Лют 07 2015 р., 03:42
+-- Час створення: Лют 07 2015 р., 12:23
 -- Версія сервера: 5.5.41-log
 -- Версія PHP: 5.3.29
 
@@ -41,7 +41,9 @@ CREATE TABLE IF NOT EXISTS `body_types` (
 CREATE TABLE IF NOT EXISTS `brands` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL,
-  PRIMARY KEY (`id`)
+  `model_id` int(4) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `model_id` (`model_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -55,7 +57,6 @@ CREATE TABLE IF NOT EXISTS `cars` (
   `user_id` int(11) NOT NULL,
   `type_id` int(11) NOT NULL,
   `brand_id` int(11) NOT NULL,
-  `model_id` int(11) NOT NULL,
   `data_registration` date NOT NULL,
   `region_id` int(11) NOT NULL,
   `price` float NOT NULL,
@@ -67,7 +68,6 @@ CREATE TABLE IF NOT EXISTS `cars` (
   KEY `user_id` (`user_id`),
   KEY `type_id` (`type_id`),
   KEY `brand_id` (`brand_id`),
-  KEY `model_id` (`model_id`),
   KEY `currency_id` (`currency_id`),
   KEY `car_body_type_id` (`car_body_type_id`),
   KEY `region_id` (`region_id`),
@@ -174,13 +174,18 @@ CREATE TABLE IF NOT EXISTS `users` (
 --
 
 --
+-- Обмеження зовнішнього ключа таблиці `brands`
+--
+ALTER TABLE `brands`
+  ADD CONSTRAINT `brands_ibfk_1` FOREIGN KEY (`model_id`) REFERENCES `models` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
 -- Обмеження зовнішнього ключа таблиці `cars`
 --
 ALTER TABLE `cars`
   ADD CONSTRAINT `cars_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
   ADD CONSTRAINT `cars_ibfk_2` FOREIGN KEY (`type_id`) REFERENCES `types` (`id`),
   ADD CONSTRAINT `cars_ibfk_3` FOREIGN KEY (`brand_id`) REFERENCES `brands` (`id`),
-  ADD CONSTRAINT `cars_ibfk_4` FOREIGN KEY (`model_id`) REFERENCES `models` (`id`),
   ADD CONSTRAINT `cars_ibfk_5` FOREIGN KEY (`currency_id`) REFERENCES `currencies` (`id`),
   ADD CONSTRAINT `cars_ibfk_6` FOREIGN KEY (`car_body_type_id`) REFERENCES `body_types` (`id`),
   ADD CONSTRAINT `cars_ibfk_7` FOREIGN KEY (`region_id`) REFERENCES `regions` (`id`),
