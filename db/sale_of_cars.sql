@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Хост: 127.0.0.1:3306
--- Час створення: Лют 07 2015 р., 12:23
+-- Час створення: Лют 08 2015 р., 14:26
 -- Версія сервера: 5.5.41-log
 -- Версія PHP: 5.3.29
 
@@ -41,9 +41,7 @@ CREATE TABLE IF NOT EXISTS `body_types` (
 CREATE TABLE IF NOT EXISTS `brands` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL,
-  `model_id` int(4) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `model_id` (`model_id`)
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -62,7 +60,6 @@ CREATE TABLE IF NOT EXISTS `cars` (
   `price` float NOT NULL,
   `currency_id` int(11) NOT NULL,
   `car_body_type_id` int(11) NOT NULL,
-  `photos_id` int(11) NOT NULL,
   `info_about_car` text NOT NULL,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
@@ -70,8 +67,7 @@ CREATE TABLE IF NOT EXISTS `cars` (
   KEY `brand_id` (`brand_id`),
   KEY `currency_id` (`currency_id`),
   KEY `car_body_type_id` (`car_body_type_id`),
-  KEY `region_id` (`region_id`),
-  KEY `photos_id` (`photos_id`)
+  KEY `region_id` (`region_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -86,6 +82,22 @@ CREATE TABLE IF NOT EXISTS `cities` (
   `region_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `region_id` (`region_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблиці `coments`
+--
+
+CREATE TABLE IF NOT EXISTS `coments` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `car_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `text` text NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `car_id` (`car_id`),
+  KEY `user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -110,7 +122,9 @@ CREATE TABLE IF NOT EXISTS `galeries` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(600) NOT NULL,
   `path` varchar(1000) NOT NULL,
-  PRIMARY KEY (`id`)
+  `car_id` int(2) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `car_id` (`car_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -122,7 +136,9 @@ CREATE TABLE IF NOT EXISTS `galeries` (
 CREATE TABLE IF NOT EXISTS `models` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL,
-  PRIMARY KEY (`id`)
+  `brand_id` int(6) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `brand_id` (`brand_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -174,12 +190,6 @@ CREATE TABLE IF NOT EXISTS `users` (
 --
 
 --
--- Обмеження зовнішнього ключа таблиці `brands`
---
-ALTER TABLE `brands`
-  ADD CONSTRAINT `brands_ibfk_1` FOREIGN KEY (`model_id`) REFERENCES `models` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
 -- Обмеження зовнішнього ключа таблиці `cars`
 --
 ALTER TABLE `cars`
@@ -188,14 +198,32 @@ ALTER TABLE `cars`
   ADD CONSTRAINT `cars_ibfk_3` FOREIGN KEY (`brand_id`) REFERENCES `brands` (`id`),
   ADD CONSTRAINT `cars_ibfk_5` FOREIGN KEY (`currency_id`) REFERENCES `currencies` (`id`),
   ADD CONSTRAINT `cars_ibfk_6` FOREIGN KEY (`car_body_type_id`) REFERENCES `body_types` (`id`),
-  ADD CONSTRAINT `cars_ibfk_7` FOREIGN KEY (`region_id`) REFERENCES `regions` (`id`),
-  ADD CONSTRAINT `cars_ibfk_8` FOREIGN KEY (`photos_id`) REFERENCES `galeries` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `cars_ibfk_7` FOREIGN KEY (`region_id`) REFERENCES `regions` (`id`);
 
 --
 -- Обмеження зовнішнього ключа таблиці `cities`
 --
 ALTER TABLE `cities`
   ADD CONSTRAINT `cities_ibfk_1` FOREIGN KEY (`region_id`) REFERENCES `regions` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Обмеження зовнішнього ключа таблиці `coments`
+--
+ALTER TABLE `coments`
+  ADD CONSTRAINT `coments_ibfk_1` FOREIGN KEY (`car_id`) REFERENCES `cars` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `coments_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
+
+--
+-- Обмеження зовнішнього ключа таблиці `galeries`
+--
+ALTER TABLE `galeries`
+  ADD CONSTRAINT `galeries_ibfk_1` FOREIGN KEY (`car_id`) REFERENCES `cars` (`id`);
+
+--
+-- Обмеження зовнішнього ключа таблиці `models`
+--
+ALTER TABLE `models`
+  ADD CONSTRAINT `models_ibfk_1` FOREIGN KEY (`brand_id`) REFERENCES `brands` (`id`);
 
 --
 -- Обмеження зовнішнього ключа таблиці `users`
