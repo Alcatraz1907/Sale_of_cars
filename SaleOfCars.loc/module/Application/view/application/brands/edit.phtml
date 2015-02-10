@@ -1,0 +1,30 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: Ivan
+ * Date: 08.02.2015
+ * Time: 15:01
+ */
+
+
+$title = 'Edit brand';
+$this->headTitle($title);
+?>
+    <h1><?php echo $this->escapeHtml($title); ?></h1>
+
+<?php
+$form = $this->form;
+$form->setAttribute('brands', $this->url(
+    'brands',
+    array(
+        'action' => 'edit',
+        'id'     => $this->id,
+    )
+));
+$form->prepare();
+
+echo $this->form()->openTag($form);
+echo $this->formHidden($form->get('id'));
+echo $this->formRow($form->get('name'));
+echo $this->formSubmit($form->get('submit'));
+echo $this->form()->closeTag();
